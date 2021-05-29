@@ -9,5 +9,4 @@ class SettlementApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
