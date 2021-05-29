@@ -28,7 +28,7 @@ public class User {
     private Boolean isAdmin = false;
 
     @Builder
-    public User(String email, String password, String nickName) {
+    public User(@NotNull String email, @NotNull String password, @NotNull String nickName) {
         this.email = email;
         this.password = password;
         this.nickName = nickName;

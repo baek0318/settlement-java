@@ -27,7 +27,7 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity<JoinResponse> userJoin(@Valid @RequestBody JoinRequest joinRequest) {
 
-        Long result = userService.userJoin(
+        Long result = userService.join(
                 joinRequest.getEmail(),
                 joinRequest.getNickName(),
                 joinRequest.getPassword());

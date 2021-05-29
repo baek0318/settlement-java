@@ -1,6 +1,7 @@
 package com.pair.settlement.user;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -11,14 +12,15 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Long userJoin(String email, String nickName, String password) {
-
+    @Transactional
+    public Long join(String email, String nickName, String password) {
         User user = new User(email, nickName, password);
         User saved = userRepository.save(user);
 
         return saved.getId();
     }
 
+    @Transactional(readOnly = true)
     public Long login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new IllegalArgumentException("찾을 수 없는 아이디입니다."));

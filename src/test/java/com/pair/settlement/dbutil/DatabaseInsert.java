@@ -1,5 +1,6 @@
 package com.pair.settlement.dbutil;
 
+import com.pair.settlement.owner.Owner;
 import com.pair.settlement.user.User;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,12 @@ public class DatabaseInsert {
     public Long saveUser(User user) {
         entityManager.persist(user);
         return user.getId();
+    }
+
+    @Transactional
+    public Long saveOwner(Owner owner) {
+        entityManager.persist(owner);
+        return owner.getId();
     }
 
 }
