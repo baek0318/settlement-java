@@ -1,5 +1,6 @@
 package com.pair.settlement.owner;
 
+import com.pair.settlement.TestConfig;
 import com.pair.settlement.dbutil.DatabaseCleanup;
 import com.pair.settlement.dbutil.DatabaseInsert;
 import com.pair.settlement.owner.dto.AccountEnrollRequest;
@@ -12,12 +13,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestConfig.class)
 public class OwnerAcceptanceTest {
 
     @Autowired
@@ -28,6 +38,9 @@ public class OwnerAcceptanceTest {
 
     @Autowired
     private DatabaseInsert dbInsert;
+
+    @LocalServerPort
+    private int port;
 
     @AfterEach
     void tearDown() {
@@ -70,5 +83,107 @@ public class OwnerAcceptanceTest {
 
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(response.getBody().getId()).isEqualTo(1L);
+    }
+
+
+    private Owner owner1;
+    private Owner owner2;
+    private Owner owner3;
+
+    void 업주저장() {
+        owner1 = Owner.builder()
+                .name("peach")
+                .email("peach@kakao.com")
+                .phoneNumber("010-1111-2222")
+                .build();
+        owner2 = Owner.builder()
+                .name("peach")
+                .email("peach@gmail.com")
+                .phoneNumber("010-1122-2222")
+                .build();
+        owner3 = Owner.builder()
+                .name("apple")
+                .email("apple@kakao.com")
+                .phoneNumber("010-1111-2222")
+                .build();
+        dbInsert.saveOwner(owner1);
+        dbInsert.saveOwner(owner2);
+        dbInsert.saveOwner(owner3);
+
+    }
+
+    @Test
+    void 아이디로_원하는_업주_가져오기() {
+        업주저장();
+        Map<String, String> queryParam = new HashMap<>();
+        String id = String.valueOf(owner1.getId());
+        queryParam.put("id", id);
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .queryParams(queryParam)
+        .when()
+                .get("/owner")
+        .then()
+                .body("id", hasItems(Integer.parseInt(id)))
+                .body("name", hasItems(owner1.getName()))
+                .body("email", hasItems(owner1.getEmail()))
+                .body("phoneNumber", hasItems(owner1.getPhoneNumber()));
+    }
+
+    @Test
+    void 이름_쿼리파람으로_원하는_데이터_가져오기() {
+        업주저장();
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("name", "peach");
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .queryParams(queryParam)
+                .when()
+                .get("/owner")
+                .then()
+                .body("id", hasItems(owner1.getId().intValue(), owner2.getId().intValue()))
+                .body("name", hasItems(owner1.getName(), owner2.getName()))
+                .body("email", hasItems(owner1.getEmail(), owner2.getEmail()))
+                .body("phoneNumber", hasItems(owner1.getPhoneNumber(), owner2.getPhoneNumber()));
+    }
+
+    @Test
+    void 이메일_업주_검색_테스트() {
+        업주저장();
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("email", "peach");
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .queryParams(queryParam)
+        .when()
+                .get("/owner")
+        .then()
+                .body("id", hasItems(owner1.getId().intValue(), owner2.getId().intValue()))
+                .body("name", hasItems(owner1.getName(), owner2.getName()))
+                .body("email", hasItems(owner1.getEmail(), owner2.getEmail()))
+                .body("phoneNumber", hasItems(owner1.getPhoneNumber(), owner2.getPhoneNumber()));
+    }
+
+    @Test
+    void 이름과_이메일로_업주_검색_테스트() {
+        업주저장();
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("email", "peach");
+        queryParam.put("name", "apple");
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .queryParams(queryParam)
+        .when()
+                .get("/owner")
+        .then()
+                .body("size", is(0));
     }
 }

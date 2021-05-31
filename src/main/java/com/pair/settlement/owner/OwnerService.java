@@ -3,6 +3,8 @@ package com.pair.settlement.owner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
@@ -35,5 +37,10 @@ public class OwnerService {
     public Owner findOwner(Long ownerId) {
         return ownerRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("찾으려는 업주가 없습니다."));
+    }
+
+    @Transactional
+    public List<Owner> searchOwner(String id, String name, String email) {
+        return ownerRepository.findOwner(id, name, email);
     }
 }

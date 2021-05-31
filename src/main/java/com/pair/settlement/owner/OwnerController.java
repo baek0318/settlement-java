@@ -1,15 +1,16 @@
 package com.pair.settlement.owner;
 
-import com.pair.settlement.owner.dto.AccountEnrollRequest;
-import com.pair.settlement.owner.dto.AccountEnrollResponse;
-import com.pair.settlement.owner.dto.OwnerEnrollRequest;
-import com.pair.settlement.owner.dto.OwnerEnrollResponse;
+import com.pair.settlement.owner.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.util.UriComponents;
 
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/owner")
@@ -47,4 +48,17 @@ public class OwnerController {
                 .created(uriComponents.toUri())
                 .body(new AccountEnrollResponse(result));
     }
+
+    @GetMapping("")
+    public ResponseEntity<List<OwnerInfoResponse>> searchOwnerInfo(@RequestParam Map<String, String> params) {
+
+        List<OwnerInfoResponse> result = ownerService
+                .searchOwner(params.get("id"), params.get("name"), params.get("email"))
+                .stream()
+                .map(OwnerInfoResponse::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
+    }
+
 }
