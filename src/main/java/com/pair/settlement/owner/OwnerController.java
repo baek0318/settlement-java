@@ -36,7 +36,8 @@ public class OwnerController {
     }
 
     @PostMapping("/{owner_id}/account")
-    public ResponseEntity<AccountEnrollResponse> enrollAccount(@PathVariable("owner_id") Long ownerId, @RequestBody @Valid AccountEnrollRequest request) {
+    public ResponseEntity<AccountEnrollResponse> enrollAccount(@PathVariable("owner_id") Long ownerId,
+                                                               @RequestBody @Valid AccountEnrollRequest request) {
         Owner owner = ownerService.findOwner(ownerId);
         Long result = ownerService.enrollAccount(owner, request.toEntity());
 
@@ -61,4 +62,11 @@ public class OwnerController {
         return ResponseEntity.ok(result);
     }
 
+    @PutMapping("")
+    public ResponseEntity<OwnerInfoResponse> update(@RequestBody OwnerUpdateRequest updateRequest) {
+
+        Owner owner = ownerService.update(updateRequest.getId(), updateRequest.toEntity());
+
+        return ResponseEntity.ok(new OwnerInfoResponse(owner));
+    }
 }

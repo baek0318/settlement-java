@@ -43,4 +43,11 @@ public class OwnerService {
     public List<Owner> searchOwner(String id, String name, String email) {
         return ownerRepository.findOwner(id, name, email);
     }
+
+    public Owner update(Long id, Owner updateOwner) {
+        Owner owner = findOwner(id);
+        updateOwner.setId(owner.getId());
+        ownerRepository.save(updateOwner);
+        return updateOwner;
+    }
 }

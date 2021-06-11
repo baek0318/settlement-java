@@ -3,10 +3,7 @@ package com.pair.settlement.owner;
 import com.pair.settlement.TestConfig;
 import com.pair.settlement.dbutil.DatabaseCleanup;
 import com.pair.settlement.dbutil.DatabaseInsert;
-import com.pair.settlement.owner.dto.AccountEnrollRequest;
-import com.pair.settlement.owner.dto.AccountEnrollResponse;
-import com.pair.settlement.owner.dto.OwnerEnrollRequest;
-import com.pair.settlement.owner.dto.OwnerEnrollResponse;
+import com.pair.settlement.owner.dto.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -142,9 +139,9 @@ public class OwnerAcceptanceTest {
                 .port(port)
                 .accept("application/json")
                 .queryParams(queryParam)
-                .when()
+        .when()
                 .get("/owner")
-                .then()
+        .then()
                 .body("id", hasItems(owner1.getId().intValue(), owner2.getId().intValue()))
                 .body("name", hasItems(owner1.getName(), owner2.getName()))
                 .body("email", hasItems(owner1.getEmail(), owner2.getEmail()))
@@ -185,5 +182,29 @@ public class OwnerAcceptanceTest {
                 .get("/owner")
         .then()
                 .body("size", is(0));
+    }
+
+    @Test
+    void 업주_업데이트하기() {
+        업주저장();
+        String updateName = "peach2";
+        OwnerUpdateRequest request = OwnerUpdateRequest.builder()
+                .id(owner1.getId())
+                .email(owner1.getEmail())
+                .name(updateName)
+                .phoneNumber(owner1.getPhoneNumber())
+                .build();
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
+                .body(request)
+        .when()
+                .put("/owner")
+        .then()
+                .statusCode(200)
+                .body("id", is(owner1.getId().intValue()))
+                .body("name", equalTo(updateName));
     }
 }
