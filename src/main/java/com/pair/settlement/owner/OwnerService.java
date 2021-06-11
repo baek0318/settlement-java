@@ -44,10 +44,24 @@ public class OwnerService {
         return ownerRepository.findOwner(id, name, email);
     }
 
+    @Transactional
     public Owner update(Long id, Owner updateOwner) {
         Owner owner = findOwner(id);
         updateOwner.setId(owner.getId());
         ownerRepository.save(updateOwner);
         return updateOwner;
     }
+
+    @Transactional
+    public Account updateAccount(Long ownerId, Account updateAccount) {
+        Owner owner = findOwner(ownerId);
+        Account account = accountRepository.findById(updateAccount.getId())
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 아이디 입니다"));
+        updateAccount.setId(account.getId());
+        updateAccount.setOwner(owner);
+        accountRepository.save(updateAccount);
+        return account;
+    }
+
+
 }

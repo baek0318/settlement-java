@@ -150,6 +150,7 @@
 
 ```json
 {
+  "ownerName": "String",
   "bank":  "String",
   "bankAccount":  "String",
   "accountHolder":  "String"

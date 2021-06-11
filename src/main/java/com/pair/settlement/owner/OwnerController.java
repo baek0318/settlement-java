@@ -69,4 +69,12 @@ public class OwnerController {
 
         return ResponseEntity.ok(new OwnerInfoResponse(owner));
     }
+
+    @PutMapping("/{owner-id}/account")
+    public ResponseEntity<AccountInfoResponse> updateAccount(@PathVariable(name = "owner-id") Long ownerId
+            , @RequestBody AccountUpdateRequest updateRequest) {
+        Account account = ownerService.updateAccount(ownerId, updateRequest.toEntity());
+        System.out.println(account.getOwner());
+        return ResponseEntity.ok(new AccountInfoResponse(account));
+    }
 }

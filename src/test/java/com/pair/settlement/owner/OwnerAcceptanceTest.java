@@ -207,4 +207,29 @@ public class OwnerAcceptanceTest {
                 .body("id", is(owner1.getId().intValue()))
                 .body("name", equalTo(updateName));
     }
+
+    @Test
+    void 업주_계좌_업데이트_테스트() {
+        업주저장();
+        Long savedId = dbInsert.saveAccount(owner1.getId(), "대구은행", "214242-323-532", "계좌주");
+        String updateBankAccount = "214242-323-333";
+        AccountUpdateRequest request = AccountUpdateRequest.builder()
+                .id(savedId)
+                .bank("대구은행")
+                .bankAccount(updateBankAccount)
+                .accountHolder("계좌주")
+                .build();
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
+                .body(request)
+        .when()
+                .put("/owner/{owner-id}/account", owner1.getId())
+        .then()
+                .statusCode(200)
+                .body("ownerName", equalTo(owner1.getName()))
+                .body("bankAccount", equalTo(updateBankAccount));
+    }
 }

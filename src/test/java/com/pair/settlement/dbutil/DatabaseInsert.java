@@ -1,5 +1,6 @@
 package com.pair.settlement.dbutil;
 
+import com.pair.settlement.owner.Account;
 import com.pair.settlement.owner.Owner;
 import com.pair.settlement.user.User;
 import org.springframework.stereotype.Component;
@@ -25,4 +26,11 @@ public class DatabaseInsert {
         return owner.getId();
     }
 
+    @Transactional
+    public Long saveAccount(Long ownerId, String bank, String bankAccount, String accountHolder) {
+        Owner owner = entityManager.find(Owner.class, ownerId);
+        Account account = new Account(owner, bank, bankAccount, accountHolder);
+        entityManager.persist(account);
+        return account.getId();
+    }
 }
