@@ -62,11 +62,7 @@ public class OwnerAcceptanceTest {
 
     @Test
     void 업주계좌_등록_테스트() {
-        dbInsert.saveOwner(Owner.builder()
-                .name("업주")
-                .email("email@naver.com")
-                .phoneNumber("010-3333-4444")
-                .build());
+        dbInsert.saveOwner("업주", "email@naver.com", "010-3333-4444");
         AccountEnrollRequest enrollRequest = new AccountEnrollRequest("은행", "214242-323-532", "계좌주");
         HttpEntity<AccountEnrollRequest> request = new HttpEntity<>(enrollRequest);
 
@@ -88,25 +84,9 @@ public class OwnerAcceptanceTest {
     private Owner owner3;
 
     void 업주저장() {
-        owner1 = Owner.builder()
-                .name("peach")
-                .email("peach@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        owner2 = Owner.builder()
-                .name("peach")
-                .email("peach@gmail.com")
-                .phoneNumber("010-1122-2222")
-                .build();
-        owner3 = Owner.builder()
-                .name("apple")
-                .email("apple@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        dbInsert.saveOwner(owner1);
-        dbInsert.saveOwner(owner2);
-        dbInsert.saveOwner(owner3);
-
+        owner1 = dbInsert.saveOwner("peach", "peach@kakao.com", "010-1111-2222");
+        owner2 = dbInsert.saveOwner("peach", "peach@gmail.com", "010-1122-2222");
+        owner3 = dbInsert.saveOwner("apple", "apple@kakao.com", "010-1111-2222");
     }
 
     @Test
