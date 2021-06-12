@@ -19,12 +19,13 @@ public class OrderDetail {
     @JoinColumn(name = "orderTableId")
     private OrderTable orderTable;
 
-    private String paymentMethod;
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod;
 
     private int price;
 
     @Builder
-    public OrderDetail(OrderTable orderTable, String paymentMethod, int price) {
+    public OrderDetail(OrderTable orderTable, PaymentMethod paymentMethod, int price) {
         this.orderTable = orderTable;
         this.paymentMethod = paymentMethod;
         this.price = price;
