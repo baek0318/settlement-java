@@ -26,7 +26,7 @@ public class QOrderDetail extends EntityPathBase<OrderDetail> {
 
     public final QOrderTable orderTable;
 
-    public final StringPath paymentMethod = createString("paymentMethod");
+    public final EnumPath<PaymentMethod> paymentMethod = createEnum("paymentMethod", PaymentMethod.class);
 
     public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
