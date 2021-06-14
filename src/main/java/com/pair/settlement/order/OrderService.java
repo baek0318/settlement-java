@@ -33,4 +33,18 @@ public class OrderService {
         }
         return new OrderSaveResponse(orderTable.getId(), detailsId);
     }
+
+    public List<OrderTable> findInfo(String ownerId, String orderId, String fromDateTime, String toDateTime) {
+        checkAllParamNull(ownerId, orderId, fromDateTime, toDateTime);
+        return orderRepository.findOrder(ownerId, orderId, fromDateTime, toDateTime);
+    }
+
+    private void checkAllParamNull(String ownerId, String orderId, String fromDateTime, String toDateTime) {
+        if((ownerId == null || ownerId.isEmpty())
+                && (orderId == null || orderId.isEmpty())
+                && (fromDateTime == null || fromDateTime.isEmpty())
+                && (toDateTime == null || toDateTime.isEmpty())){
+            throw new RuntimeException("모든 param이 null이여서는 안됩니다");
+        }
+    }
 }
