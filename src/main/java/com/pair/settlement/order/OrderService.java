@@ -1,5 +1,6 @@
 package com.pair.settlement.order;
 
+import com.pair.settlement.order.dto.OrderDetailInfoResponse;
 import com.pair.settlement.order.dto.OrderDetailSaveRequest;
 import com.pair.settlement.order.dto.OrderInfoResponse;
 import com.pair.settlement.order.dto.OrderSaveResponse;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -52,8 +54,21 @@ public class OrderService {
     }
 
     @Transactional
-    public ResponseEntity<OrderInfoResponse> findInfoWithDetail(Long orderId) {
+    public OrderInfoResponse findInfoWithDetail(Long orderId) {
+        checkIdNull(orderId);
+        OrderTable found = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 아이디가 없습니다"));
+        OrderInfoResponse response = new OrderInfoResponse(found);
+        response.setDetails(
+                found.getOrderDetails().stream()
+                        .map(OrderDetailInfoResponse::new)
+                        .collect(Collectors.toList()));
+        return response;
+    }
 
-        return null;
+    private void checkIdNull(Long orderId) {
+        if(orderId == null) {
+            throw new RuntimeException("아이디값이 null이여서는 안됩니다");
+        }
     }
 }

@@ -4,6 +4,7 @@ import com.pair.settlement.order.dto.OrderInfoListResponse;
 import com.pair.settlement.order.dto.OrderInfoResponse;
 import com.pair.settlement.order.dto.OrderSaveRequest;
 import com.pair.settlement.order.dto.OrderSaveResponse;
+import com.querydsl.core.types.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
@@ -58,5 +59,7 @@ public class OrderController {
     }
 
     @GetMapping("/{order-id}/detail")
-    public ResponseEntity<OrderInfoResponse>
+    public ResponseEntity<OrderInfoResponse> getInfoDetail(@PathVariable(name = "order-id") Long id) {
+        return ResponseEntity.ok(orderService.findInfoWithDetail(id));
+    }
 }
