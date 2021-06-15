@@ -26,24 +26,9 @@ public class OwnerRepositoryTest {
 
     @BeforeEach
     void 업주저장() {
-        owner1 = Owner.builder()
-                .name("백승화")
-                .email("peach@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        owner2 = Owner.builder()
-                .name("백승화")
-                .email("peach@gmail.com")
-                .phoneNumber("010-1122-2222")
-                .build();
-        owner3 = Owner.builder()
-                .name("apple")
-                .email("apple@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        dbInsert.saveOwner(owner1);
-        dbInsert.saveOwner(owner2);
-        dbInsert.saveOwner(owner3);
+        owner1 = dbInsert.saveOwner("백승화", "peach@kakao.com", "010-1111-2222");
+        owner2 = dbInsert.saveOwner("백승화", "peach@gmail.com", "010-1122-2222");
+        owner3 = dbInsert.saveOwner("apple", "apple@kakao.com", "010-1111-2222");
     }
 
     @Test

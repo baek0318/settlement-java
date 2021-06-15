@@ -1,4 +1,7 @@
-### 📄 API document
+## Database
+![settlement_db](./img/settlement_db.png)
+
+# 📄 API document
 
 ## User
 
@@ -150,9 +153,98 @@
 
 ```json
 {
+  "ownerName": "String",
   "bank":  "String",
   "bankAccount":  "String",
   "accountHolder":  "String"
 }
+```
+</details>
+
+## OrderTable
+
+### `POST` /orderTable
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|ownerId|Long|body| |
+|totalPrice|int|body| |
+|status|String|body| |
+|createdAt|DateTime|body| |
+|detail|List<detail>|body| |
+<details>
+
+<summary>
+detail
+</summary>
+
+```json
+{
+  "paymentMethod": "String",
+  "price": "Integer"
+}
+```
+</details>
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+{
+  "id": "Long",
+  "detailIds": ["Long"]
+}
+```
+</details>
+
+### `GET` /order?owner-id=""&order-id=""&fromDateTime=""&toDateTime=""
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|owner-id|Long|query-param| |
+|order-id|Long|query-param| |
+|fromDateTime|DateTime|query-param| |
+|toDateTime|DateTime|query-param| |
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+[
+  {
+    "ownerId": "Long",
+    "orderId": "Long",
+    "totalPrice": "Long",
+    "status": "String",
+    "createdAt": "DateTime"
+  }
+]
+```
+</details>
+
+### `GET` /order/{order-id}/detail
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|orderId|Long|path-variable| |
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+[
+  {
+    "orderDetailId": "Long",
+    "orderId": "Long",
+    "paymentMethod": "String",
+    "price": "int"
+  } 
+]
 ```
 </details>

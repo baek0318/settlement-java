@@ -3,10 +3,7 @@ package com.pair.settlement.owner;
 import com.pair.settlement.TestConfig;
 import com.pair.settlement.dbutil.DatabaseCleanup;
 import com.pair.settlement.dbutil.DatabaseInsert;
-import com.pair.settlement.owner.dto.AccountEnrollRequest;
-import com.pair.settlement.owner.dto.AccountEnrollResponse;
-import com.pair.settlement.owner.dto.OwnerEnrollRequest;
-import com.pair.settlement.owner.dto.OwnerEnrollResponse;
+import com.pair.settlement.owner.dto.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -65,11 +62,7 @@ public class OwnerAcceptanceTest {
 
     @Test
     void 업주계좌_등록_테스트() {
-        dbInsert.saveOwner(Owner.builder()
-                .name("업주")
-                .email("email@naver.com")
-                .phoneNumber("010-3333-4444")
-                .build());
+        dbInsert.saveOwner("업주", "email@naver.com", "010-3333-4444");
         AccountEnrollRequest enrollRequest = new AccountEnrollRequest("은행", "214242-323-532", "계좌주");
         HttpEntity<AccountEnrollRequest> request = new HttpEntity<>(enrollRequest);
 
@@ -91,25 +84,9 @@ public class OwnerAcceptanceTest {
     private Owner owner3;
 
     void 업주저장() {
-        owner1 = Owner.builder()
-                .name("peach")
-                .email("peach@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        owner2 = Owner.builder()
-                .name("peach")
-                .email("peach@gmail.com")
-                .phoneNumber("010-1122-2222")
-                .build();
-        owner3 = Owner.builder()
-                .name("apple")
-                .email("apple@kakao.com")
-                .phoneNumber("010-1111-2222")
-                .build();
-        dbInsert.saveOwner(owner1);
-        dbInsert.saveOwner(owner2);
-        dbInsert.saveOwner(owner3);
-
+        owner1 = dbInsert.saveOwner("peach", "peach@kakao.com", "010-1111-2222");
+        owner2 = dbInsert.saveOwner("peach", "peach@gmail.com", "010-1122-2222");
+        owner3 = dbInsert.saveOwner("apple", "apple@kakao.com", "010-1111-2222");
     }
 
     @Test
@@ -142,9 +119,9 @@ public class OwnerAcceptanceTest {
                 .port(port)
                 .accept("application/json")
                 .queryParams(queryParam)
-                .when()
+        .when()
                 .get("/owner")
-                .then()
+        .then()
                 .body("id", hasItems(owner1.getId().intValue(), owner2.getId().intValue()))
                 .body("name", hasItems(owner1.getName(), owner2.getName()))
                 .body("email", hasItems(owner1.getEmail(), owner2.getEmail()))
@@ -185,5 +162,54 @@ public class OwnerAcceptanceTest {
                 .get("/owner")
         .then()
                 .body("size", is(0));
+    }
+
+    @Test
+    void 업주_업데이트하기() {
+        업주저장();
+        String updateName = "peach2";
+        OwnerUpdateRequest request = OwnerUpdateRequest.builder()
+                .id(owner1.getId())
+                .email(owner1.getEmail())
+                .name(updateName)
+                .phoneNumber(owner1.getPhoneNumber())
+                .build();
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
+                .body(request)
+        .when()
+                .put("/owner")
+        .then()
+                .statusCode(200)
+                .body("id", is(owner1.getId().intValue()))
+                .body("name", equalTo(updateName));
+    }
+
+    @Test
+    void 업주_계좌_업데이트_테스트() {
+        업주저장();
+        Long savedId = dbInsert.saveAccount(owner1.getId(), "대구은행", "214242-323-532", "계좌주");
+        String updateBankAccount = "214242-323-333";
+        AccountUpdateRequest request = AccountUpdateRequest.builder()
+                .id(savedId)
+                .bank("대구은행")
+                .bankAccount(updateBankAccount)
+                .accountHolder("계좌주")
+                .build();
+
+        given()
+                .port(port)
+                .accept("application/json")
+                .contentType("application/json")
+                .body(request)
+        .when()
+                .put("/owner/{owner-id}/account", owner1.getId())
+        .then()
+                .statusCode(200)
+                .body("ownerName", equalTo(owner1.getName()))
+                .body("bankAccount", equalTo(updateBankAccount));
     }
 }

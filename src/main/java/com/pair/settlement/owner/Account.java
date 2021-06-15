@@ -33,5 +33,11 @@ public class Account {
         this.accountHolder = accountHolder;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
 }

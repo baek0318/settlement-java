@@ -34,4 +34,7 @@ public class Owner {
         this.phoneNumber = phoneNumber;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
