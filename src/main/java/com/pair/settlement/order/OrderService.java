@@ -7,6 +7,7 @@ import com.pair.settlement.owner.Owner;
 import com.pair.settlement.owner.OwnerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ public class OrderService {
         this.ownerService = ownerService;
     }
 
+    @Transactional
     public OrderSaveResponse save(Long ownerId, List<OrderDetail> details, OrderTable order) {
         Owner owner = ownerService.findOwner(ownerId);
         order.setOwner(owner);
@@ -34,6 +36,7 @@ public class OrderService {
         );
     }
 
+    @Transactional
     public List<OrderTable> findInfo(String ownerId, String orderId, String fromDateTime, String toDateTime) {
         checkAllParamNull(ownerId, orderId, fromDateTime, toDateTime);
         return orderRepository.findOrder(ownerId, orderId, fromDateTime, toDateTime);
@@ -48,6 +51,7 @@ public class OrderService {
         }
     }
 
+    @Transactional
     public ResponseEntity<OrderInfoResponse> findInfoWithDetail(Long orderId) {
 
         return null;
