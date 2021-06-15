@@ -31,7 +31,7 @@ public class OrderTable {
 
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "orderTable")
+    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY)
     private List<OrderDetail> orderDetails;
 
     @Builder
