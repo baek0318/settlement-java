@@ -50,8 +50,31 @@ public class OrderDetailServiceTest {
                 .orderTable(order)
                 .build();
         List<OrderDetail> list = Arrays.asList(orderDetail, orderDetail2);
-        int totalPrice = 6000;
         Assertions.assertThatThrownBy(() -> orderDetailService.saveDetails(list, order))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void Order에_제대로_추가되는지_확인() {
+        OrderTable order = OrderTable.builder()
+                .totalPrice(5000)
+                .build();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .paymentMethod(PaymentMethod.CARD)
+                .price(2000)
+                .orderTable(order)
+                .build();
+        OrderDetail orderDetail2 = OrderDetail.builder()
+                .paymentMethod(PaymentMethod.CASH)
+                .price(3000)
+                .orderTable(order)
+                .build();
+        List<OrderDetail> list = Arrays.asList(orderDetail, orderDetail2);
+
+        when(orderDetailRepository.save(orderDetail)).thenReturn(orderDetail);
+        when(orderDetailRepository.save(orderDetail2)).thenReturn(orderDetail2);
+        orderDetailService.saveDetails(list, order);
+
+        Assertions.assertThat(order.getOrderDetails().size()).isEqualTo(list.size());
     }
 }

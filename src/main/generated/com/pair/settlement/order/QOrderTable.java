@@ -26,6 +26,8 @@ public class QOrderTable extends EntityPathBase<OrderTable> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<OrderDetail, QOrderDetail> orderDetails = this.<OrderDetail, QOrderDetail>createList("orderDetails", OrderDetail.class, QOrderDetail.class, PathInits.DIRECT2);
+
     public final com.pair.settlement.owner.QOwner owner;
 
     public final EnumPath<OrderStatus> status = createEnum("status", OrderStatus.class);
