@@ -26,9 +26,14 @@ public class DatabaseInsert {
     }
 
     @Transactional
-    public Long saveOwner(Owner owner) {
+    public Owner saveOwner(String name, String email, String phoneNumber) {
+        Owner owner = Owner.builder()
+                .name(name)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .build();
         entityManager.persist(owner);
-        return owner.getId();
+        return owner;
     }
 
     @Transactional
@@ -40,8 +45,7 @@ public class DatabaseInsert {
     }
 
     @Transactional
-    public OrderTable saveOrder(Long ownerId, int totalPrice, OrderStatus status, LocalDateTime createdAt) {
-        Owner owner = entityManager.find(Owner.class, ownerId);
+    public OrderTable saveOrder(Owner owner, int totalPrice, OrderStatus status, LocalDateTime createdAt) {
         OrderTable order = OrderTable.builder()
                 .owner(owner)
                 .totalPrice(totalPrice)
@@ -53,8 +57,7 @@ public class DatabaseInsert {
     }
 
     @Transactional
-    public OrderDetail saveOrderDetail(Long orderId, PaymentMethod paymentMethod, int price) {
-        OrderTable order = entityManager.find(OrderTable.class, orderId);
+    public OrderDetail saveOrderDetail(OrderTable order, PaymentMethod paymentMethod, int price) {
         OrderDetail orderDetail = OrderDetail.builder()
                 .orderTable(order)
                 .price(price)
