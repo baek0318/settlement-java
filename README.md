@@ -199,13 +199,14 @@ detail
 ```
 </details>
 
-### `GET` /orderTable?owner-id=""&orderTable-id=""&created-at=""
+### `GET` /order?owner-id=""&order-id=""&fromDateTime=""&toDateTime=""
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
-|ownerId|Long|query-param| |
-|orderId|Long|query-param| |
-|createdAt|DateTime|query-param| |
+|owner-id|Long|query-param| |
+|order-id|Long|query-param| |
+|fromDateTime|DateTime|query-param| |
+|toDateTime|DateTime|query-param| |
 
 <details>
 <summary>
@@ -225,7 +226,7 @@ detail
 ```
 </details>
 
-### `GET` /orderTable/{orderTable-id}/detail
+### `GET` /order/{order-id}/detail
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
