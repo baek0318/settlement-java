@@ -31,6 +31,7 @@ public class OrderTableRepositoryTest {
     OrderTable orderTable1;
     OrderTable orderTable2;
     OrderTable orderTable3;
+    OrderTable orderTable4;
 
     @BeforeEach
     void setUp() {
@@ -56,6 +57,12 @@ public class OrderTableRepositoryTest {
                 .status(OrderStatus.WAITING)
                 .totalPrice(6000)
                 .build();
+        orderTable4 = OrderTable.builder()
+                .owner(owner1)
+                .createdAt(LocalDateTime.of(2021,6,14,11,22))
+                .status(OrderStatus.WAITING)
+                .totalPrice(4000)
+                .build();
         orderTable3 = OrderTable.builder()
                 .owner(owner2)
                 .createdAt(LocalDateTime.of(2021,6,14,11,10))
@@ -67,6 +74,7 @@ public class OrderTableRepositoryTest {
         em.persist(orderTable1);
         em.persist(orderTable2);
         em.persist(orderTable3);
+        em.persist(orderTable4);
     }
 
     @Test
@@ -77,8 +85,9 @@ public class OrderTableRepositoryTest {
         List<OrderTable> result = orderRepository.findOrder(Long.toString(owner1.getId()), null, "", "");
 
         //then
-        Collections.sort(result, Comparator.comparingLong(OrderTable::getId));
-        List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2);
+        List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2, orderTable4);
+        dataSort(result);
+        dataSort(expected);
         orderTableAssert(result, expected);
     }
 
@@ -99,8 +108,9 @@ public class OrderTableRepositoryTest {
         List<OrderTable> result = orderRepository.findOrder(null, null, "2021-06-14T11:10", "2021-06-14T11:20");
 
         //then
-        Collections.sort(result, Comparator.comparingLong(OrderTable::getId));
         List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2, orderTable3);
+        dataSort(result);
+        dataSort(expected);
         orderTableAssert(result, expected);
     }
 
@@ -110,8 +120,9 @@ public class OrderTableRepositoryTest {
         List<OrderTable> result = orderRepository.findOrder(null, null, "2021-06-14T11:10", null);
 
         //then
-        Collections.sort(result, Comparator.comparingLong(OrderTable::getId));
-        List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2, orderTable3);
+        List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2, orderTable3, orderTable4);
+        dataSort(result);
+        dataSort(expected);
         orderTableAssert(result, expected);
     }
 
@@ -121,9 +132,31 @@ public class OrderTableRepositoryTest {
         List<OrderTable> result = orderRepository.findOrder(null, null, "", "2021-06-14T11:10");
 
         //then
-        Collections.sort(result, Comparator.comparingLong(OrderTable::getId));
         List<OrderTable> expected = Arrays.asList(orderTable2, orderTable3);
+        dataSort(result);
+        dataSort(expected);
         orderTableAssert(result, expected);
+    }
+
+    @Test
+    void 업주_아이디와_기간으로_데이터_가져오기_테스트() {
+        //when
+        List<OrderTable> result = orderRepository.findOrder(
+                Long.toString(owner1.getId()),
+                null,
+                "2021-06-14T11:10",
+                "2021-06-14T11:20"
+        );
+
+        //then
+        List<OrderTable> expected = Arrays.asList(orderTable1, orderTable2);
+        dataSort(result);
+        dataSort(expected);
+        orderTableAssert(result, expected);
+    }
+
+    private void dataSort(List<OrderTable> orders) {
+        Collections.sort(orders, Comparator.comparingLong(OrderTable::getId));
     }
 
     private void orderTableAssert(List<OrderTable> result, List<OrderTable> expected) {
