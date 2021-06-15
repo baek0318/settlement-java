@@ -27,7 +27,9 @@ public class OrderDetailService {
         List<Long> result = new ArrayList<>();
         for(OrderDetail orderDetail : orderDetails) {
             orderDetail.setOrder(order);
-            result.add(orderDetailRepository.save(orderDetail).getId());
+            OrderDetail saved = orderDetailRepository.save(orderDetail);
+            order.setOrderDetail(saved);
+            result.add(saved.getId());
         }
         return result;
     }
