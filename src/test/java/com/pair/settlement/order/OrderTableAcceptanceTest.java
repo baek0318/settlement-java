@@ -168,26 +168,28 @@ public class OrderTableAcceptanceTest {
 
     @Test
     void 주문아이디로_상세_주문_검색() {
-        String dateTime1 = "2021-06-15T04:17";
+        String dateTime1 = "2021-06-15T04:17:00";
         OrderTable orderTable = dbInsert.saveOrder(owner, 7000, OrderStatus.WAITING, LocalDateTime.parse(dateTime1));
         OrderDetail detail1 = dbInsert.saveOrderDetail(orderTable, PaymentMethod.CARD, 4000);
         OrderDetail detail2 = dbInsert.saveOrderDetail(orderTable, PaymentMethod.COUPON, 3000);
 
-        given()
-                .port(port)
-                .accept("application/json")
-        .when()
-                .get("/order/{order-id}/detail", orderTable.getId())
-        .then()
-                .statusCode(200)
-                .body("ownerId", is(owner.getId().intValue()))
-                .body("orderId", is(orderTable.getId().intValue()))
-                .body("totalPrice", is(orderTable.getTotalPrice()))
-                .body("status", is(OrderStatus.WAITING))
-                .body("createdAt", equalTo(dateTime1))
-                .body("details.orderDetailId", hasItem(detail1.getId()))
-                .and().body("details.paymentMethod", hasItem(detail2.getPaymentMethod()))
-                .and().body("details.price", hasItem(detail1.getPrice()));
+        OrderInfoResponse response =
+                given()
+                        .port(port)
+                        .accept("application/json")
+                .when()
+                        .get("/order/{order-id}/detail", orderTable.getId())
+                .thenReturn()
+                        .body()
+                        .as(OrderInfoResponse.class);
 
+        List<OrderDetail> expected = Arrays.asList(detail1, detail2);
+        List<OrderDetailInfoResponse> actual = response.getDetails();
+        Assertions.assertThat(actual.size()).isEqualTo(expected.size());
+        for(int i = 0; i < actual.size(); i++) {
+            Assertions.assertThat(actual.get(i).getPrice()).isEqualTo(expected.get(i).getPrice());
+            Assertions.assertThat(actual.get(i).getPaymentMethod()).isEqualTo(expected.get(i).getPaymentMethod());
+            Assertions.assertThat(actual.get(i).getOrderDetailId()).isEqualTo(expected.get(i).getId());
+        }
     }
 }

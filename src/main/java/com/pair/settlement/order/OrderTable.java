@@ -9,6 +9,8 @@ import org.hibernate.annotations.GeneratorType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +32,9 @@ public class OrderTable {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "orderTable", fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetails = new ArrayList<>();
+
     @Builder
     public OrderTable(Owner owner, int totalPrice, OrderStatus status, LocalDateTime createdAt) {
         this.owner = owner;
@@ -40,5 +45,9 @@ public class OrderTable {
 
     public void setOwner(Owner owner) {
         this.owner = owner;
+    }
+
+    public void setOrderDetail(OrderDetail orderDetail) {
+        orderDetails.add(orderDetail);
     }
 }

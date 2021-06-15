@@ -163,7 +163,7 @@
 
 ## OrderTable
 
-### `POST` /orderTable
+### `POST` /order
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|

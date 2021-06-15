@@ -7,6 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 public class OrderTableServiceTest {
 
@@ -14,7 +16,7 @@ public class OrderTableServiceTest {
     OrderRepository orderRepository;
 
     @Mock
-    OrderDetailRepository orderDetailRepository;
+    OrderDetailService orderDetailService;
 
     @InjectMocks
     OrderService orderService;
@@ -31,5 +33,21 @@ public class OrderTableServiceTest {
         Assertions.assertThatThrownBy(
                 () -> orderService.findInfo("", "", "", "")
         ).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 주문정보_가져올때_주문아이디값이_null인_경우() {
+        Assertions.assertThatThrownBy(
+                () -> orderService.findInfoWithDetail(null)
+        ).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 주문정보_가져올때_주문아이디값이_존재하지않는_경우() {
+        when(orderRepository.findById(2L))
+                .thenThrow(new IllegalArgumentException("일치하는 아이디값이 없습니다"));
+        Assertions.assertThatThrownBy(
+                () -> orderService.findInfoWithDetail(2L))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
