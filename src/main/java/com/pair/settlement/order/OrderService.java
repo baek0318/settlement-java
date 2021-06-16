@@ -71,4 +71,14 @@ public class OrderService {
             throw new RuntimeException("아이디값이 null이여서는 안됩니다");
         }
     }
+
+    @Transactional
+    public OrderInfoResponse update(Long ownerId, List<OrderDetail> details, OrderTable order) {
+        Owner owner = ownerService.findOwner(ownerId);
+        order.setOwner(owner);
+        OrderTable orderTable = orderRepository.save(order);
+        OrderInfoResponse response = new OrderInfoResponse(orderTable);
+        response.setDetails(orderDetailService.update(details, orderTable));
+        return response;
+    }
 }

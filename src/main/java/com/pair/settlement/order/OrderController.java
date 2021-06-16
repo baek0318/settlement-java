@@ -1,9 +1,6 @@
 package com.pair.settlement.order;
 
-import com.pair.settlement.order.dto.OrderInfoListResponse;
-import com.pair.settlement.order.dto.OrderInfoResponse;
-import com.pair.settlement.order.dto.OrderSaveRequest;
-import com.pair.settlement.order.dto.OrderSaveResponse;
+import com.pair.settlement.order.dto.*;
 import com.querydsl.core.types.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -61,5 +58,15 @@ public class OrderController {
     @GetMapping("/{order-id}/detail")
     public ResponseEntity<OrderInfoResponse> getInfoDetail(@PathVariable(name = "order-id") Long id) {
         return ResponseEntity.ok(orderService.findInfoWithDetail(id));
+    }
+
+    @PutMapping("")
+    public ResponseEntity<OrderInfoResponse> updateOrder(@RequestBody OrderUpdateRequest updateRequest) {
+        List<OrderDetail> details = updateRequest.getDetails().stream()
+                .map(OrderDetailUpdateRequest::toEntity)
+                .collect(Collectors.toList());
+        OrderInfoResponse response = orderService.update(updateRequest.getOwnerId(), details, updateRequest.toEntity());
+
+        return ResponseEntity.ok(response);
     }
 }

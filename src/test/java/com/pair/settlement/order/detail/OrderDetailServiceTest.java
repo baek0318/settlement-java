@@ -77,4 +77,26 @@ public class OrderDetailServiceTest {
 
         Assertions.assertThat(order.getOrderDetails().size()).isEqualTo(list.size());
     }
+
+    @Test
+    void 업데이트시에_총금액과_일치하지않는_경우() {
+        OrderTable order = OrderTable.builder()
+                .totalPrice(5000)
+                .build();
+        OrderDetail orderDetail = OrderDetail.builder()
+                .paymentMethod(PaymentMethod.CARD)
+                .price(2000)
+                .orderTable(order)
+                .build();
+        OrderDetail orderDetail2 = OrderDetail.builder()
+                .paymentMethod(PaymentMethod.CASH)
+                .price(2000)
+                .orderTable(order)
+                .build();
+        List<OrderDetail> list = Arrays.asList(orderDetail, orderDetail2);
+
+        Assertions.assertThatThrownBy(
+                () -> orderDetailService.update(list, order)
+        ).isInstanceOf(RuntimeException.class);
+    }
 }

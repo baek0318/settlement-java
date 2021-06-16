@@ -50,4 +50,6 @@ public class OrderTable {
     public void setOrderDetail(OrderDetail orderDetail) {
         orderDetails.add(orderDetail);
     }
+
+    public void setId(Long id) {this.id = id;}
 }

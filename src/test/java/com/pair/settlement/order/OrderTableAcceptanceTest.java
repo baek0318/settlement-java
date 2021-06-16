@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -185,8 +186,60 @@ public class OrderTableAcceptanceTest {
 
         List<OrderDetail> expected = Arrays.asList(detail1, detail2);
         List<OrderDetailInfoResponse> actual = response.getDetails();
+        orderDetailAssert(expected, actual);
+    }
+
+    @Test
+    void 주문_상세금액_수정() {
+        String dateTime1 = "2021-06-15T04:17:00";
+        OrderTable orderTable = dbInsert.saveOrder(owner, 7000, OrderStatus.WAITING, LocalDateTime.parse(dateTime1));
+        OrderDetail detail1 = dbInsert.saveOrderDetail(orderTable, PaymentMethod.CARD, 4000);
+        OrderDetail detail2 = dbInsert.saveOrderDetail(orderTable, PaymentMethod.COUPON, 3000);
+        OrderDetail change1 = OrderDetail.builder()
+                .orderTable(orderTable)
+                .price(3000)
+                .paymentMethod(PaymentMethod.COUPON)
+                .build();
+        change1.setId(detail1.getId());
+        OrderDetail change2 = OrderDetail.builder()
+                .orderTable(orderTable)
+                .price(4000)
+                .paymentMethod(PaymentMethod.CASH)
+                .build();
+        change2.setId(detail2.getId());
+
+        List<OrderDetailUpdateRequest> details = Arrays.asList(change1, change2).stream()
+                .map(OrderDetailUpdateRequest::new)
+                .collect(Collectors.toList());
+        OrderUpdateRequest updateRequest = OrderUpdateRequest.builder()
+                .id(orderTable.getId())
+                .createdAt(orderTable.getCreatedAt())
+                .details(details)
+                .ownerId(orderTable.getOwner().getId())
+                .status(orderTable.getStatus().toString())
+                .totalPrice(orderTable.getTotalPrice())
+                .build();
+
+        OrderInfoResponse response =
+                given()
+                        .port(port)
+                        .accept("application/json")
+                        .contentType("application/json")
+                        .body(updateRequest)
+                .when()
+                        .put("/order")
+                .thenReturn()
+                        .body()
+                        .as(OrderInfoResponse.class);
+
+        List<OrderDetail> expected = Arrays.asList(change1, change2);
+        List<OrderDetailInfoResponse> actual = response.getDetails();
+        orderDetailAssert(expected, actual);
+    }
+
+    private void orderDetailAssert(List<OrderDetail> expected, List<OrderDetailInfoResponse> actual) {
         Assertions.assertThat(actual.size()).isEqualTo(expected.size());
-        for(int i = 0; i < actual.size(); i++) {
+        for (int i = 0; i < actual.size(); i++) {
             Assertions.assertThat(actual.get(i).getPrice()).isEqualTo(expected.get(i).getPrice());
             Assertions.assertThat(actual.get(i).getPaymentMethod()).isEqualTo(expected.get(i).getPaymentMethod());
             Assertions.assertThat(actual.get(i).getOrderDetailId()).isEqualTo(expected.get(i).getId());

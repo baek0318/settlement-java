@@ -2,6 +2,7 @@ package com.pair.settlement.order;
 
 import com.pair.settlement.order.OrderDetail;
 import com.pair.settlement.order.OrderDetailRepository;
+import com.pair.settlement.order.dto.OrderDetailInfoResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,5 +45,21 @@ public class OrderDetailService {
         if(detailPrice != totalPrice) {
             throw new RuntimeException("detail Price와 totalPrice는 일치해야 합니다");
         }
+    }
+
+    @Transactional
+    public List<OrderDetailInfoResponse> update(List<OrderDetail> details, OrderTable orderTable) {
+        checkOrderIsNull(orderTable);
+        isSameTotalPrice(
+                details.stream().mapToInt(OrderDetail::getPrice).reduce(0, Integer::sum),
+                orderTable.getTotalPrice()
+        );
+        List<OrderDetailInfoResponse> response = new ArrayList<>();
+        for(OrderDetail detail : details) {
+            detail.setOrder(orderTable);
+            OrderDetail updated = orderDetailRepository.save(detail);
+            response.add(new OrderDetailInfoResponse(updated));
+        }
+        return response;
     }
 }

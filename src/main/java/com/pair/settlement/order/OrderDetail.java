@@ -34,5 +34,7 @@ public class OrderDetail {
     public void setOrder(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
+
+    public void setId(Long id) { this.id = id; }
 }
 
