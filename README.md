@@ -5,7 +5,7 @@
 
 ## User
 
-### `POST` /user
+### `POST` /com.pair.user
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -26,7 +26,7 @@
 </details>
 
 
-### `POST` /user/login
+### `POST` /com.pair.user/login
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -46,7 +46,7 @@
 
 ## Owner
 
-### `GET` /owner?...
+### `GET` /com.pair.owner?...
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -69,7 +69,7 @@
 ```
 </details>
 
-### `POST` /owner
+### `POST` /com.pair.owner
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -91,7 +91,7 @@
 
 </details>
 
-### `POST` /owner/{owner_id}/account
+### `POST` /com.pair.owner/{owner_id}/account
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -113,7 +113,7 @@
 ```
 </details>
 
-### `PUT` /owner
+### `PUT` /com.pair.owner
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -136,7 +136,7 @@
 ```
 </details>
 
-### `PUT` /owner/{owner_id}/account
+### `PUT` /com.pair.owner/{owner_id}/account
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -163,7 +163,7 @@
 
 ## OrderTable
 
-### `POST` /order
+### `POST` /com.pair.order
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -199,12 +199,12 @@ detail
 ```
 </details>
 
-### `GET` /order?owner-id=""&order-id=""&fromDateTime=""&toDateTime=""
+### `GET` /com.pair.order?com.pair.owner-id=""&com.pair.order-id=""&fromDateTime=""&toDateTime=""
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
-|owner-id|Long|query-param| |
-|order-id|Long|query-param| |
+|com.pair.owner-id|Long|query-param| |
+|com.pair.order-id|Long|query-param| |
 |fromDateTime|DateTime|query-param| |
 |toDateTime|DateTime|query-param| |
 
@@ -226,7 +226,7 @@ detail
 ```
 </details>
 
-### `GET` /order/{order-id}/detail
+### `GET` /com.pair.order/{com.pair.order-id}/detail
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
