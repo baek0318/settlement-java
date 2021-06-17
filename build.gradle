@@ -47,3 +47,9 @@ project(':service') {
         compile project(':repository')
     }
 }
+
+project(':batch') {
+    dependencies {
+        compile project(':repository')
+    }
+}
