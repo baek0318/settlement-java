@@ -2,4 +2,5 @@ rootProject.name = 'settlement'
 include 'presentation'
 include 'service'
 include 'repository'
+include 'batch'
 

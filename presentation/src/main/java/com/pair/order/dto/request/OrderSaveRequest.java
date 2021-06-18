@@ -2,6 +2,7 @@ package com.pair.order.dto.request;
 
 import com.pair.order.OrderStatus;
 import com.pair.order.OrderTable;
+import com.pair.order.dto.OrderSave;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,6 +40,18 @@ public class OrderSaveRequest {
                 .totalPrice(this.totalPrice)
                 .status(OrderStatus.valueOf(this.status))
                 .createdAt(this.createdAt)
+                .build();
+    }
+
+    public OrderSave toSaveDto() {
+        return OrderSave.builder()
+                .createdAt(createdAt)
+                .details(details.stream()
+                        .map(OrderDetailSaveRequest::toSaveDto)
+                        .collect(Collectors.toList()))
+                .ownerId(ownerId)
+                .status(status)
+                .totalPrice(totalPrice)
                 .build();
     }
 }

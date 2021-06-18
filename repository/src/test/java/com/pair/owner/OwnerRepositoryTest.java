@@ -1,6 +1,5 @@
 package com.pair.owner;
 
-import com.pair.config.TestConfig;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 @DataJpaTest
-@Import({TestConfig.class})
 public class OwnerRepositoryTest {
 
     @Autowired

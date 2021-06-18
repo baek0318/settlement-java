@@ -1,5 +1,6 @@
 package com.pair.order.dto.request;
 
+import com.pair.order.dto.OrderDetailSave;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,12 @@ public class OrderDetailSaveRequest {
     public OrderDetailSaveRequest(String paymentMethod, int price) {
         this.paymentMethod = paymentMethod;
         this.price = price;
+    }
+
+    public OrderDetailSave toSaveDto() {
+        return OrderDetailSave.builder()
+                .paymentMethod(paymentMethod)
+                .price(price)
+                .build();
     }
 }
