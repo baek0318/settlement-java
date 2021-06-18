@@ -30,13 +30,7 @@ public class OrderController {
     @PostMapping("")
     public ResponseEntity<OrderSaveResponse> save(@RequestBody OrderSaveRequest saveRequest) {
 
-        List<OrderDetail> details = saveRequest.getDetails().stream()
-                .map(it -> OrderDetail.builder()
-                        .paymentMethod(PaymentMethod.valueOf(it.getPaymentMethod()))
-                        .price(it.getPrice())
-                        .build())
-                .collect(Collectors.toList());
-        OrderSaveInfo response = orderService.save(saveRequest.getOwnerId(), details, saveRequest.toEntity());
+        OrderSaveInfo response = orderService.save(saveRequest.toSaveDto());
 
         UriComponents uriComponents = MvcUriComponentsBuilder
                 .fromMethodCall(MvcUriComponentsBuilder.on(OrderController.class).save(saveRequest))

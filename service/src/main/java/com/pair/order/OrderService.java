@@ -2,6 +2,7 @@ package com.pair.order;
 
 import com.pair.order.dto.OrderDetailInfo;
 import com.pair.order.dto.OrderInfo;
+import com.pair.order.dto.OrderSave;
 import com.pair.order.dto.OrderSaveInfo;
 import com.pair.owner.Owner;
 import com.pair.owner.OwnerService;
@@ -25,13 +26,17 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderSaveInfo save(Long ownerId, List<OrderDetail> details, OrderTable order) {
-        Owner owner = ownerService.findOwner(ownerId);
-        order.setOwner(owner);
-        OrderTable orderTable = orderRepository.save(order);
+    public OrderSaveInfo save(OrderSave orderSave) {
+        Owner owner = ownerService.findOwner(orderSave.getOwnerId());
+        OrderTable order = orderSave.toEntity(owner);
+        OrderTable saved = orderRepository.save(order);
         return new OrderSaveInfo(
-                orderTable.getId(),
-                orderDetailService.saveDetails(details, orderTable)
+                saved.getId(),
+                orderDetailService.saveDetails(
+                        orderSave.getDetails().stream()
+                                .map(it -> it.toEntity(saved))
+                                .collect(Collectors.toList()),
+                        saved)
         );
     }
 
