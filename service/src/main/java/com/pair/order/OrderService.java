@@ -1,9 +1,6 @@
 package com.pair.order;
 
-import com.pair.order.dto.OrderDetailInfo;
-import com.pair.order.dto.OrderInfo;
-import com.pair.order.dto.OrderSave;
-import com.pair.order.dto.OrderSaveInfo;
+import com.pair.order.dto.*;
 import com.pair.owner.Owner;
 import com.pair.owner.OwnerService;
 import org.springframework.stereotype.Service;
@@ -41,12 +38,20 @@ public class OrderService {
     }
 
     @Transactional
-    public List<OrderTable> findInfo(String ownerId, String orderId, String fromDateTime, String toDateTime) {
-        checkAllParamNull(ownerId, orderId, fromDateTime, toDateTime);
-        return orderRepository.findOrder(ownerId, orderId, fromDateTime, toDateTime);
+    public List<OrderTable> findInfo(OrderFind orderFind) {
+        checkAllParamNull(orderFind);
+        return orderRepository.findOrder(
+                orderFind.getOwnerId(),
+                orderFind.getOrderId(),
+                orderFind.getFromDateTime(),
+                orderFind.getToDateTime());
     }
 
-    private void checkAllParamNull(String ownerId, String orderId, String fromDateTime, String toDateTime) {
+    private void checkAllParamNull(OrderFind orderFind) {
+        String ownerId = orderFind.getOwnerId();
+        String orderId = orderFind.getOrderId();
+        String fromDateTime = orderFind.getFromDateTime();
+        String toDateTime = orderFind.getToDateTime();
         if((ownerId == null || ownerId.isEmpty())
                 && (orderId == null || orderId.isEmpty())
                 && (fromDateTime == null || fromDateTime.isEmpty())
@@ -56,9 +61,9 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderInfo findInfoWithDetail(Long orderId) {
-        checkIdNull(orderId);
-        OrderTable found = orderRepository.findById(orderId)
+    public OrderInfo findInfoWithDetail(OrderWithDetailFind orderWithDetailFind) {
+        checkIdNull(orderWithDetailFind.getOrderId());
+        OrderTable found = orderRepository.findById(orderWithDetailFind.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 아이디가 없습니다"));
         OrderInfo response = new OrderInfo(found);
         response.setDetails(
