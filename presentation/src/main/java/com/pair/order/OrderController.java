@@ -43,19 +43,14 @@ public class OrderController {
     @GetMapping("")
     public ResponseEntity<OrderInfoListResponse> getInfos(@RequestParam Map<String, String> param) {
 
-        List<OrderTable> result = orderService.findInfo(
-                param.get("com.pair.owner-id"),
-                param.get("com.pair.order-id"),
-                param.get("fromDateTime"),
-                param.get("toDateTime")
-        );
+        List<OrderTable> result = orderService.findInfo(new OrderFind(param));
 
         return ResponseEntity.ok(new OrderInfoListResponse(result));
     }
 
     @GetMapping("/{order-id}/detail")
     public ResponseEntity<OrderInfoResponse> getInfoDetail(@PathVariable(name = "order-id") Long id) {
-        OrderInfo result = orderService.findInfoWithDetail(id);
+        OrderInfo result = orderService.findInfoWithDetail(new OrderWithDetailFind(id));
         OrderInfoResponse response = new OrderInfoResponse(result, result.getDetails());
         return ResponseEntity.ok(response);
     }
