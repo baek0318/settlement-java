@@ -35,11 +35,12 @@ public class OrderTable {
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @Builder
-    public OrderTable(Owner owner, int totalPrice, OrderStatus status, LocalDateTime createdAt) {
+    public OrderTable(Long id, Owner owner, int totalPrice, OrderStatus status, LocalDateTime createdAt) {
         this.owner = owner;
         this.totalPrice = totalPrice;
         this.status = status;
         this.createdAt = createdAt;
+        this.id = id;
     }
 
     public void setOwner(Owner owner) {

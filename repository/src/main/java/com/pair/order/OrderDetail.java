@@ -25,16 +25,15 @@ public class OrderDetail {
     private int price;
 
     @Builder
-    public OrderDetail(OrderTable orderTable, PaymentMethod paymentMethod, int price) {
+    public OrderDetail(Long id, OrderTable orderTable, PaymentMethod paymentMethod, int price) {
         this.orderTable = orderTable;
         this.paymentMethod = paymentMethod;
         this.price = price;
+        this.id = id;
     }
 
     public void setOrder(OrderTable orderTable) {
         this.orderTable = orderTable;
     }
-
-    public void setId(Long id) { this.id = id; }
 }
 

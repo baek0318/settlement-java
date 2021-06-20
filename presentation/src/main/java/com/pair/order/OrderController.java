@@ -57,10 +57,7 @@ public class OrderController {
 
     @PutMapping("")
     public ResponseEntity<OrderInfoResponse> updateOrder(@RequestBody OrderUpdateRequest updateRequest) {
-        List<OrderDetail> details = updateRequest.getDetails().stream()
-                .map(OrderDetailUpdateRequest::toEntity)
-                .collect(Collectors.toList());
-        OrderInfo result = orderService.update(updateRequest.getOwnerId(), details, updateRequest.toEntity());
+        OrderInfo result = orderService.update(updateRequest.toOrderUpdate());
         OrderInfoResponse response = new OrderInfoResponse(result, result.getDetails());
         return ResponseEntity.ok(response);
     }

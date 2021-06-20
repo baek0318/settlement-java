@@ -3,11 +3,13 @@ package com.pair.order;
 import com.pair.order.OrderDetail;
 import com.pair.order.OrderDetailRepository;
 import com.pair.order.dto.OrderDetailInfo;
+import com.pair.order.dto.OrderDetailUpdate;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderDetailService {
@@ -48,15 +50,17 @@ public class OrderDetailService {
     }
 
     @Transactional
-    public List<OrderDetailInfo> update(List<OrderDetail> details, OrderTable orderTable) {
+    public List<OrderDetailInfo> update(List<OrderDetailUpdate> detailUpdates, OrderTable orderTable) {
         checkOrderIsNull(orderTable);
+        List<OrderDetail> details = detailUpdates.stream()
+                .map(it -> it.toEntity(orderTable))
+                .collect(Collectors.toList());
         isSameTotalPrice(
                 details.stream().mapToInt(OrderDetail::getPrice).reduce(0, Integer::sum),
                 orderTable.getTotalPrice()
         );
         List<OrderDetailInfo> response = new ArrayList<>();
         for(OrderDetail detail : details) {
-            detail.setOrder(orderTable);
             OrderDetail updated = orderDetailRepository.save(detail);
             response.add(new OrderDetailInfo(updated));
         }
