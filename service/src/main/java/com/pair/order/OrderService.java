@@ -80,12 +80,13 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderInfo update(Long ownerId, List<OrderDetail> details, OrderTable order) {
-        Owner owner = ownerService.findOwner(ownerId);
+    public OrderInfo update(OrderUpdate orderUpdate) {
+        OrderTable order = orderUpdate.toOrderEntity();
+        Owner owner = ownerService.findOwner(orderUpdate.getOwnerId());
         order.setOwner(owner);
         OrderTable orderTable = orderRepository.save(order);
         OrderInfo response = new OrderInfo(orderTable);
-        response.setDetails(orderDetailService.update(details, orderTable));
+        response.setDetails(orderDetailService.update(orderUpdate.getDetails(), orderTable));
         return response;
     }
 }

@@ -1,6 +1,7 @@
 package com.pair.order.detail;
 
 import com.pair.order.*;
+import com.pair.order.dto.OrderDetailUpdate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,17 +84,19 @@ public class OrderDetailServiceTest {
         OrderTable order = OrderTable.builder()
                 .totalPrice(5000)
                 .build();
-        OrderDetail orderDetail = OrderDetail.builder()
-                .paymentMethod(PaymentMethod.CARD)
+        OrderDetailUpdate orderDetailUpdate1 = OrderDetailUpdate.builder()
+                .id(1L)
+                .orderId(1L)
+                .paymentMethod("CASH")
                 .price(2000)
-                .orderTable(order)
                 .build();
-        OrderDetail orderDetail2 = OrderDetail.builder()
-                .paymentMethod(PaymentMethod.CASH)
+        OrderDetailUpdate orderDetailUpdate2 = OrderDetailUpdate.builder()
+                .id(2L)
+                .orderId(1L)
+                .paymentMethod("CARD")
                 .price(2000)
-                .orderTable(order)
                 .build();
-        List<OrderDetail> list = Arrays.asList(orderDetail, orderDetail2);
+        List<OrderDetailUpdate> list = Arrays.asList(orderDetailUpdate1, orderDetailUpdate2);
 
         Assertions.assertThatThrownBy(
                 () -> orderDetailService.update(list, order)

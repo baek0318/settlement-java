@@ -203,16 +203,16 @@ public class OrderTableAcceptanceTest {
         OrderDetail detail2 = dbInsert.saveOrderDetail(orderTable, PaymentMethod.COUPON, 3000);
         OrderDetail change1 = OrderDetail.builder()
                 .orderTable(orderTable)
+                .id(detail1.getId())
                 .price(3000)
                 .paymentMethod(PaymentMethod.COUPON)
                 .build();
-        change1.setId(detail1.getId());
         OrderDetail change2 = OrderDetail.builder()
                 .orderTable(orderTable)
                 .price(4000)
+                .id(detail2.getId())
                 .paymentMethod(PaymentMethod.CASH)
                 .build();
-        change2.setId(detail2.getId());
 
         List<OrderDetailUpdateRequest> details = Arrays.asList(change1, change2).stream()
                 .map(OrderDetailUpdateRequest::new)
