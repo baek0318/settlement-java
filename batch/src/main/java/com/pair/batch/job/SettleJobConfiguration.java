@@ -15,10 +15,12 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.time.LocalDateTime;
 
@@ -30,8 +32,10 @@ public class SettleJobConfiguration {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final EntityManagerFactory entityManagerFactory;
+    private final EntityManager em;
 
-    private final int CHUNCKSIZE = 10;
+
+    private final int CHUNCKSIZE = 1;
 
     @Bean
     public Job settleJob() {
@@ -44,21 +48,19 @@ public class SettleJobConfiguration {
     public Step settleStep() {
         return stepBuilderFactory.get("settleStep")
                 .<OrderTable, Settle>chunk(CHUNCKSIZE)
-                .reader(orderReader(null))
+                .reader(orderReader())
+                .processor(itemProcessor())
                 .writer(orderWriter())
                 .build();
     }
 
     @Bean
-    @StepScope
-    public JpaPagingItemReader<OrderTable> orderReader(@Value("#{jobParameters[reqeustDate]}") String date) {
+    public JpaPagingItemReader<OrderTable> orderReader() {
         return new JpaPagingItemReaderBuilder<OrderTable>()
                 .name("orderReader")
                 .entityManagerFactory(entityManagerFactory)
                 .pageSize(CHUNCKSIZE)
-                .queryString("select o from OrderTable o "
-                        +"where o.created_at = "+date+" "
-                        +"ORDER BY id")
+                .queryString("SELECT o FROM com.pair.order.OrderTable o ORDER BY o.id")
                 .build();
     }
 
@@ -67,7 +69,7 @@ public class SettleJobConfiguration {
         return order -> Settle.builder()
                 .amount(order.getTotalPrice())
                 .dateTime(LocalDateTime.now())
-                .ownerId(order.getOwner().getId())
+                .owner(order.getOwner())
                 .build();
     }
 

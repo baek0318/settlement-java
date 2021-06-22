@@ -12,3 +12,6 @@ spring:
       username: settlement_batch_user
       password: 1234
       driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    generate-ddl: true
+logging.level.org.springframework.batch: DEBUG
