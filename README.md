@@ -1,8 +1,11 @@
-### 📄 API document
+## Database
+![settlement_db](./img/settlement_db.png)
+
+# 📄 API document
 
 ## User
 
-### `POST` /user
+### `POST` /com.pair.user
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -23,7 +26,7 @@
 </details>
 
 
-### `POST` /user/login
+### `POST` /com.pair.user/login
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -43,7 +46,7 @@
 
 ## Owner
 
-### `GET` /owner?...
+### `GET` /com.pair.owner?...
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -66,7 +69,7 @@
 ```
 </details>
 
-### `POST` /owner
+### `POST` /com.pair.owner
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -88,7 +91,7 @@
 
 </details>
 
-### `POST` /owner/{owner_id}/account
+### `POST` /com.pair.owner/{owner_id}/account
 #### parameter
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -110,7 +113,7 @@
 ```
 </details>
 
-### `PUT` /owner
+### `PUT` /com.pair.owner
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -133,7 +136,7 @@
 ```
 </details>
 
-### `PUT` /owner/{owner_id}/account
+### `PUT` /com.pair.owner/{owner_id}/account
 #### parameters
 |Name|Type|In|Description|
 |---|---|---|---|
@@ -150,9 +153,98 @@
 
 ```json
 {
+  "ownerName": "String",
   "bank":  "String",
   "bankAccount":  "String",
   "accountHolder":  "String"
 }
+```
+</details>
+
+## OrderTable
+
+### `POST` /com.pair.order
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|ownerId|Long|body| |
+|totalPrice|int|body| |
+|status|String|body| |
+|createdAt|DateTime|body| |
+|detail|List<detail>|body| |
+<details>
+
+<summary>
+detail
+</summary>
+
+```json
+{
+  "paymentMethod": "String",
+  "price": "Integer"
+}
+```
+</details>
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+{
+  "id": "Long",
+  "detailIds": ["Long"]
+}
+```
+</details>
+
+### `GET` /com.pair.order?com.pair.owner-id=""&com.pair.order-id=""&fromDateTime=""&toDateTime=""
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|com.pair.owner-id|Long|query-param| |
+|com.pair.order-id|Long|query-param| |
+|fromDateTime|DateTime|query-param| |
+|toDateTime|DateTime|query-param| |
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+[
+  {
+    "ownerId": "Long",
+    "orderId": "Long",
+    "totalPrice": "Long",
+    "status": "String",
+    "createdAt": "DateTime"
+  }
+]
+```
+</details>
+
+### `GET` /com.pair.order/{com.pair.order-id}/detail
+#### parameters
+|Name|Type|In|Description|
+|---|---|---|---|
+|orderId|Long|path-variable| |
+
+<details>
+<summary>
+응답
+</summary>
+
+```json
+[
+  {
+    "orderDetailId": "Long",
+    "orderId": "Long",
+    "paymentMethod": "String",
+    "price": "int"
+  } 
+]
 ```
 </details>
