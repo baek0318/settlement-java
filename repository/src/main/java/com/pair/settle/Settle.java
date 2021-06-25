@@ -1,5 +1,6 @@
 package com.pair.settle;
 
+import com.pair.owner.Owner;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,17 +19,17 @@ public class Settle {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owner-id")
-    private Long ownerId;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 
     private LocalDateTime dateTime;
 
     private int amount;
 
     @Builder
-    public Settle(Long id, Long ownerId, LocalDateTime dateTime, int amount) {
+    public Settle(Long id, Owner owner, LocalDateTime dateTime, int amount) {
         this.id = id;
-        this.ownerId = ownerId;
+        this.owner = owner;
         this.dateTime = dateTime;
         this.amount = amount;
     }
